@@ -1,0 +1,357 @@
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="slick-1.5.9/slick/slick.min.js"></script>
+<link rel="stylesheet" type="text/css" href="slick-1.5.9/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="slick-1.5.9/slick/slick-theme.css"/>
+<style>
+.text_cut_10 {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	display:-webkit-box;
+			-webkit-line-clamp:10;
+			-webkit-box-orient:vertical;
+	margin:0 0 5 0;
+	padding:0;
+	text-align:left;
+}
+
+.text_cut_5 {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	display:-webkit-box;
+			-webkit-line-clamp:5;
+			-webkit-box-orient:vertical;
+	margin:0 0 5 0;
+	padding:0;
+	text-align:left;
+}
+</style>
+</head>
+
+<script>
+function transIt2 (form) {
+	form.submit (   );
+}
+
+function trans(map_rcode, query) {
+	document.location.href = "index.php?query="+query+"&map_rcode="+map_rcode;
+}
+
+function add_slider(star_nm, star_img)
+{
+	if (star_nm) {
+		document.getElementById("slider_star").innerHTML += "	\
+				<div>	\
+					<table>	\
+					<tr><td align=center>	\
+						<div style='width:50px;height:50px;border-radius:50px;overflow:hidden'><img src='profile_img/" + star_img + "' style='width:50px;height:auto;'></div>	\
+					</td></tr>	\
+					<tr><td align=center style='padding-top:8px;'>" + star_nm + "</td></tr>	\
+					</table>	\
+				</div>";
+	}
+	else {
+		document.getElementById("slider_star").innerHTML += "<div></div>";
+	}
+}
+
+function disp_profile_img(profile_img, size)
+{
+	var html = "<div style='width:" + size + "px;height:" + size + "px;border-radius:" + size + "px;overflow:hidden'><img src='" + profile_img + "' style='width:" + size + "px;height:auto;'></div>"
+	document.write(html);
+}
+
+</script>
+
+<html>
+<body style='padding:0pt;margin:0pt;background-color:#ffffff;'>
+
+<input type=hidden id='rm_star_cnt' value='0'>
+
+<!-- 처음에는 div로 디자인을 했는데... 길이 맞춰주기 너무 귀찮아서 table로 교체 -->
+<table width=360 border=0 cellspacing=0 cellpadding=0 style='background-color:#e4e7ea;'>
+<tr><td style='padding:20 20 20 20;width:360px;height:50px;background-color:#3c3ea5;color:#ffffff;font-size:20px;border-bottom:2pt solid #34368a;'>
+	<div style='float:left;width:280px;font-size:18pt;'>CELEB's</div>
+	<div style='float:left;width:30px;'><img src='img/search.png' width=25 height=25></div>
+</td></tr>
+<tr><td style='padding:0;width:360px;height:50px;background-color:#3c3ea5;color:#ffffff;font-size:20px;'>
+	<div style='float:left;width:120px;text-align:center;font-size:13pt;'>내스타</div>
+	<div style='float:left;width:120px;text-align:center;font-size:13pt;'>올스타</div>
+	<div style='float:left;width:120px;text-align:center;font-size:13pt;'>핫스타</div>
+</td></tr>
+<tr><td style='padding:0;width:360px;height:5px;background-color:#3c3ea5;color:#ffffff;font-size:20px;'>
+	<div style='float:left;width:120px;height:5px;background-color:#ffffff;'></div>
+	<div style='float:left;width:120px;height:5px;'></div>
+	<div style='float:left;width:120px;height:5px;'></div>
+</td></tr>
+
+<tr><td style='padding:10 10 10 10;'>
+	<table cellpadding=0 cellspacing=0 style='box-shadow:1px 1px 1px rgba(0,0,0,0.3);'>
+	<tr><td style='padding:15 15 15 15;background-color:#ffffff;font-size:13pt;border-bottom:2pt solid #f2f2f2;'>
+		<div style='float:left;font-weight:bold;width:55px;'>내 스타</div>
+		<div style='float:left;font-weight:bold;width:250px;color:#5458b3;'>8</div>
+		<div style='float:left;font-weight:bold;width:5px;color:#c4c4c4;'>></div>
+	</td></tr>
+	<tr><td>
+		<div id='slider_star' class='slider slider_star' style='margin:0;padding:10 10 10 10;width:340px;height:105px;background-color:#ffffff;'></div>
+		<script>
+			add_slider("박서준", "1.jpg");
+			add_slider("김연아", "2.jpg");
+			add_slider("서강준", "3.jpg");
+			add_slider("유재석", "4.jpg");
+			add_slider("장도연", "5.jpg");
+			add_slider("지드래곤", "6.jpg");
+			add_slider("이연희", "7.jpg");
+			add_slider("크리스탈", "8.jpg");
+			add_slider("", "");
+			add_slider("", "");
+		</script>
+	</td></tr>
+	</table>
+</td></tr>
+
+<script>
+$('.slider_star').slick({
+	centerMode: false,
+	infinite: false,
+	dots: false,
+	arrows: false,
+	slidesToShow: 5,
+	slidesToScroll: 5
+})
+</script>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/1.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>박서준</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>20분 전</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;'>
+				제주도 여행 마지막날.<br>쌀살한 날씨여서 사람이 없으니 더 운치있네요...
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;'>
+				<img src='img/1_1.png' style='max-width:320px;height:auto;'>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/2.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>김연아</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>35분 전</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;text-align:right;'>
+				<p class=text_cut_5>
+				글이 길땐 최대 5줄까지 노출 후 말줄임.<br>
+				사진이 세로로 길던지 정사각일때. 무조건 정사각크롭<br>
+				선수촌에서 우연히 만난 대한민국 선수단과 찰칵!<br>
+				눈부신 노르웨이 햇살만큼 아름다운 선수단<br>
+				선수촌에서 우연히 만난 대한민국 선수단과 찰칵!<br>
+				</p>
+				<font color=#b7b7b7>더보기</font>
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;'>
+				<img src='img/2_1.png' style='max-width:320px;height:auto;'>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/2.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>김연아</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>2016.02.05</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;text-align:right;'>
+				<p class=text_cut_10>
+					글만 있을땐 최대 10줄까지 가능합니다.<br>
+					2010년 동계 올림픽 여자 싱글 부문 챔피언, 2014년 동계올림픽 여자 싱글 부문 은메달리스트, 2009년∙2013년 세계 선수권 챔피언이며, 대한민국 최초의 올림픽 메달리스트, 세게선수권대회 메달리스트이다. 2003년, 2004년, 2005년, 2006년, 2013년, 2014년 한국 피겨스케이팅 종합 손수권 대회 우승자 이기도 하다. 또한 2009년 4대륙 피겨 스케이팅 선수권 대회 우승, ISU 그랍프리 파이널 3회 우승을 통해 blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+				</p>
+				<font color=#b7b7b7>더보기</font>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/6.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>지드래곤</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>2016.02.05</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;'>
+				사진이 2장일때
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;'>
+				<div style='float:left;width:159px;height:159px;overflow:hidden;'><img src='img/6_2.png' style='width:159px;height:auto;'></div>
+				<div style='float:left;width:2px;'>&nbsp;</div>
+				<div style='float:left;width:159px;height:159px;overflow:hidden;'><img src='img/6_3.png' style='width:159px;height:auto;'></div>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/6.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>지드래곤</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>2016.02.05</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;'>
+				사진이 2장일때-둘다 세로로 길때
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;'>
+				<div style='float:left;width:159px;height:220px;overflow:hidden;'><img src='img/6_2.png' style='width:159px;height:auto;'></div>
+				<div style='float:left;width:2px;'>&nbsp;</div>
+				<div style='float:left;width:159px;height:220px;overflow:hidden;'><img src='img/6_3.png' style='width:159px;height:auto;'></div>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/6.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>지드래곤</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>2016.02.05</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;'>
+				사진이 3장일때-둘다 세로로 길때
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;'>
+				<div style='float:left;width:209px;height:209px;overflow:hidden;'><img src='img/6_1.png' style='width:209;height:auto;'></div>
+				<div style='float:left;width:2px;height:209px;'></div>
+				<div style='float:left;width:109px;height:104px;overflow:hidden;'><img src='img/6_2.png' style='width:109;height:auto;'></div>
+				<!-- 이유는 모르겠지만 아래 overflow:hidden 빼면 적용이 안된다... -->
+				<div style='float:bottom;width:109px;height:2px;overflow:hidden;'></div>
+				<div style='float:bottom;width:109px;height:103px;overflow:hidden;'><img src='img/6_3.png' style='width:109;height:auto;'></div>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+	<tr><td style='padding:0 10 10 10;'>
+		<table cellpadding=0 cellspacing=0 style='width:340px;box-shadow:1px 1px 1px rgba(0,0,0,0.3);background-color:#ffffff;'>
+			<tr><td style='padding:15 15 15 15;font-size:13pt;'>
+				<table cellpadding=0 cellspacing=0><tr>
+					<td width=80><script>disp_profile_img('profile_img/6.jpg', 60)</script></td>
+					<td width=120><font style='font-size:15pt;'>지드래곤</font></td>
+					<td width=85 align=right style='padding:0 10 0 0;'><font style='color:#969696;'>2016.02.05</font></td>
+					<td width=25><img src='img/facebook.png' style='width:25px;height:25px;'></td>
+				</tr></table>
+			</td></tr>
+			<tr><td style='padding:0 15 0 15;line-height:1.5em;'>
+				사진이 4장 이상일때
+			</td></tr>
+			<tr><td style='padding:10 10 5 10;position:relative;'>
+				<div style='float:left;width:209px;height:209px;overflow:hidden;'><img src='img/6_1.png' style='width:209;height:auto;'></div>
+				<div style='float:left;width:2px;height:209px;'></div>
+				<div style='float:left;width:109px;height:104px;overflow:hidden;'><img src='img/6_2.png' style='width:109;height:auto;'></div>
+				<!-- 이유는 모르겠지만 아래 overflow:hidden 빼면 적용이 안된다... -->
+				<div style='float:bottom;width:109px;height:2px;overflow:hidden;'></div>
+				<div style='float:bottom;width:109px;height:103px;overflow:hidden;'><img src='img/6_3.png' style='width:109;height:auto;'></div>
+				<div style='font-size:20pt;position:absolute;color:#ffffff;bottom:10px;right:20px;'>+3</div>
+			</td></tr>
+			<tr><td style='padding:0 10 0 10;'><hr style='height:1px;background-color:#e1e1e1;border:none;'></td></tr>
+			<tr><td>
+				<table cellpadding=0 cellspacing=0 style='padding:10 0 15 15;'><tr>
+					<td width=30><img src='img/favorite.png' style='max-height:20;width:auto;'></td>
+					<td width=40 valign=middle style='font-size:13pt;'>25</td>
+					<td width=30><img src='img/reply.png' style='max-height:25;width:auto;'></td>
+					<td width=170 valign=middle style='font-size:13pt;'>1,253</td>
+					<td align=right><img src='img/more.png' style='max-height:11;width:auto;'></td>
+				</tr></table>
+			</td></tr>
+		</table>
+	</td></tr>
+
+</table>
+
+</body>
+</html>
