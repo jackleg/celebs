@@ -11,7 +11,7 @@ import re
 from util import import_django
 import_django()
 
-from celebs.models import Celeb
+from celebs.models import Celeb, TwitterAccount, FacebookAccount, InstagramAccount
 
 
 def get_id_from_url(url):
@@ -23,6 +23,11 @@ def get_id_from_url(url):
     except ValueError:
         return ""
     
+
+def make_sns_account(class_obj, id):
+    if id == "": return None
+    else: return class_obj.objects.get_or_create(id=id)[0]
+
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s] %(message)s")
 category_pattern = re.compile(r" \((?P<category>.+)\)$") # 이름에 있는 카테고리명을 잡기 위함.
@@ -40,13 +45,15 @@ with open("sns.txt") as infile:
             category = category_match.group('category')
             name = category_pattern.sub('', name)
 
-        twitter_id = get_id_from_url(twitter)
-        facebook_id = get_id_from_url(facebook)
-        instagram_id = get_id_from_url(instagram)
-        
+        twitter_account = make_sns_account(TwitterAccount, get_id_from_url(twitter))
+        facebook_account = make_sns_account(FacebookAccount, get_id_from_url(facebook))
+        instagram_account = make_sns_account(InstagramAccount, get_id_from_url(instagram))
+
         celeb, created = Celeb.objects.update_or_create(
                                 name=name, category=category,
-                                twitter_id=twitter_id, facebook_id=facebook_id, instagram_id=instagram_id)
+                                defaults={'twitter_account': twitter_account,
+                                          'facebook_account': facebook_account, 
+                                          'instagram_account': instagram_account})
 
         if created:
             created_count += 1

@@ -12,7 +12,7 @@ from util import import_django
 import_django()
 
 from django.utils import timezone
-from celebs.models import Celeb, Tweet
+from celebs.models import TwitterAccount, Tweet
 
 
 # to do. logging을 어떻게 할 것인지?
@@ -29,23 +29,21 @@ logging.basicConfig(level=logging.INFO)
 #r = requests.get(TWITTER_BASE_URL, params={'screen_name': "anwlrdlek"}, headers=headers)
 #for tweet in r.json():
 #   print json.dumps(tweet, indent=4)
-for celeb in Celeb.objects.all().order_by('-last_fetch_time'):
-    if celeb.twitter_id is None or celeb.twitter_id == "": continue
-
-    logging.info("crawl tweets for [%s]" % celeb.name.encode('utf8'))
+for twitter_account in TwitterAccount.objects.all().order_by('-last_fetch_time'):
+    logging.info("crawl tweets for [%s]" % twitter_account.id)
     new_tweet_count = 0
     updated_tweet_count = 0
 
-    r = requests.get(TWITTER_BASE_URL, params={'screen_name': celeb.twitter_id}, headers=headers)
+    r = requests.get(TWITTER_BASE_URL, params={'screen_name': twitter_account.id}, headers=headers)
 
     # too many fetch. sleep and retry.
     while r.status_code == 429:
         time.sleep(10)
-        r = requests.get(TWITTER_BASE_URL, params={'screen_name': celeb.twitter_id}, headers=headers)
+        r = requests.get(TWITTER_BASE_URL, params={'screen_name': twitter_account.id}, headers=headers)
     
     # 이런 경우 해당 celeb의 tweet을 제외해야 할 듯.
     if r.status_code != 200:
-        logging.info('[%s][%d] does not open tweets.' % (celeb.name.encode('utf8'), r.status_code))
+        logging.info('[%s][%d] does not open tweets.' % (twitter_account.id, r.status_code))
         continue
 
     for tweet_count, tweet in enumerate(r.json(), start=1):
@@ -55,18 +53,16 @@ for celeb in Celeb.objects.all().order_by('-last_fetch_time'):
                                                   created_at=datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'),
                                                   favorite_count=tweet['favorite_count'],
                                                   retweet_count=tweet['retweet_count']),
-                                    celeb=celeb,
+                                    twitter_account=twitter_account,
                                     id=tweet['id'])
 
-        tweet_model.save()
-        
         if created: new_tweet_count += 1
         else: updated_tweet_count += 1
     
-    celeb.last_fetch_time = timezone.now()    
-    celeb.save()
+    twitter_account.last_fetch_time = timezone.now()    
+    twitter_account.save()
 
-    logging.info("[%s] new tweet: %d, updated tweet: %d." % (celeb.name.encode('utf8'), new_tweet_count, updated_tweet_count))
+    logging.info("[%s] new tweet: %d, updated tweet: %d." % (twitter_account.id, new_tweet_count, updated_tweet_count))
 
     # tweet API가 15분마다 180 call로 제한.
     time.sleep(5)
