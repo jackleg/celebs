@@ -25,7 +25,7 @@ TWITTER_BASE_URL='https://api.twitter.com/1.1/statuses/user_timeline.json'
 ACCESS_TOKEN='AAAAAAAAAAAAAAAAAAAAAJOttwAAAAAAeQpi6xxpixPcNVzpVokJnoVyuQg%3DuLLydn6vvdkkrJ9TFEOqli4etiHMfwojJPTgTc1BZNnrV47Pgl'
 headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN}
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s][%(asctime)s] %(message)s')
 
 #r = requests.get(TWITTER_BASE_URL, params={'screen_name': "anwlrdlek"}, headers=headers)
 #for tweet in r.json():
