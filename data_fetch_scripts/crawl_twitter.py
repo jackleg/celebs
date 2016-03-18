@@ -7,6 +7,7 @@ import logging
 import time
 
 import requests
+from dateutil import parser
 
 from util import import_django
 import_django()
@@ -29,6 +30,7 @@ logging.basicConfig(level=logging.INFO)
 #r = requests.get(TWITTER_BASE_URL, params={'screen_name': "anwlrdlek"}, headers=headers)
 #for tweet in r.json():
 #   print json.dumps(tweet, indent=4)
+#for twitter_account in [TwitterAccount.objects.get(id='jackleg83')]:
 for twitter_account in TwitterAccount.objects.all().order_by('-last_fetch_time'):
     logging.info("crawl tweets for [%s]" % twitter_account.id)
     new_tweet_count = 0
@@ -50,7 +52,7 @@ for twitter_account in TwitterAccount.objects.all().order_by('-last_fetch_time')
         # celeb과 id로 tweet를 특정한 후, 새로 수집한 데이터로 업데이트한다.
         tweet_model, created = Tweet.objects.update_or_create(
                                     defaults=dict(text=tweet['text'],
-                                                  created_at=datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'),
+                                                  created_at=parser.parse(tweet['created_at']),
                                                   favorite_count=tweet['favorite_count'],
                                                   retweet_count=tweet['retweet_count']),
                                     twitter_account=twitter_account,
