@@ -7,11 +7,13 @@ celeb 정보들이 있는 sns.txt 파일을 parsing해서 django에서 사용중
 
 import logging
 import re
+import sys
 
 from util import import_django
 import_django()
 
 from celebs.models import Celeb, TwitterAccount, FacebookAccount, InstagramAccount
+import instagram as ins_util
 
 
 def get_id_from_url(url):
@@ -25,8 +27,16 @@ def get_id_from_url(url):
     
 
 def make_sns_account(class_obj, id):
+
     if id == "": return None
-    else: return class_obj.objects.get_or_create(id=id)[0]
+    else:
+        if class_obj.__name__ == "InstagramAccount":
+            real_id = ins_util.get_userid_from_username(id)
+            if real_id == None: return None
+            
+            class_obj.objects.get_or_create(id=id, defaults={"real_id": real_id})
+        else:
+            return class_obj.objects.get_or_create(id=id)[0]
 
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s] %(message)s")
