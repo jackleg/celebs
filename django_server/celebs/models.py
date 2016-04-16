@@ -57,8 +57,13 @@ class FacebookAccount(SnsAccount):
 
 
 class InstagramAccount(SnsAccount):
+    # instagram은 우리가 흔히 ID라고 말하는 영단어 포맷은 username이라 부르고
+    # 숫자로 나타내는 것을 id라고 한다.
+    # 여기에서는 우선 다른 account와의 통일성을 위해 username을 id라 부르고 숫자 id를 real_id라 한다.
+    real_id = models.CharField(max_length=20)
+
     def get_account_url(self):
-        return "https://www.instagram.com/" % self.id
+        return "https://www.instagram.com/%s" % self.id
 
     def __unicode__(self):
         return u"[instagram] %s" % self.id
@@ -67,7 +72,7 @@ class InstagramAccount(SnsAccount):
 class Tweet(models.Model):
     """하나의 tweet을 저장하기 위한 모델."""
 
-    twitter_account = models.ForeignKey('TwitterAccount', related_name='tweets', on_delete=models.CASCADE) # 이 tweet을 account
+    twitter_account = models.ForeignKey('TwitterAccount', related_name='tweets', on_delete=models.CASCADE)
 
     id = models.BigIntegerField(primary_key=True) # tweet id
     text = models.TextField() # tweet 내용
@@ -82,3 +87,26 @@ class Tweet(models.Model):
 
     def __unicode__(self):
         return u"[{self.id}] {self.text}".format(self=self)
+
+
+class InstagramPost(models.Model):
+    """하나의 instagram post를 저장하기 위한 모델."""
+
+    instagram_account = models.ForeignKey('InstagramAccount', related_name='posts', on_delete=models.CASCADE)
+
+    id = models.CharField(primary_key=True, max_length=100) # post id
+    thumbnail = models.URLField()
+    standard = models.URLField()
+    link = models.URLField()
+    created_at = models.DateTimeField()
+    caption = models.TextField()
+    comments_count = models.IntegerField(default=0) # '좋아요' 수
+    likes_count = models.IntegerField(default=0) # 'RT' 수
+    last_fetch_time = models.DateTimeField(default=timezone.now()) # 마지막 fetch time.
+
+    def get_post_url(self):
+        """이 post로 바로 가기 위한 URL"""
+        return self.link
+
+    def __unicode__(self):
+        return u"[{self.id}] {self.caption}".format(self=self)
