@@ -8,6 +8,7 @@ class Celeb(models.Model):
     name = models.CharField(max_length=100) # celeb의 이름
     category = models.CharField(max_length=50, null=True, blank=True) # celeb이 속하는 카테고리. 가수, 배우, etc.
     registered_time = models.DateTimeField(default=timezone.now()) # 등록 시각.
+    profile_image = models.URLField(null=True, blank=True)
 
     # each sns account
     # many-to-one relation.
@@ -49,6 +50,11 @@ class TwitterAccount(SnsAccount):
 
 
 class FacebookAccount(SnsAccount):
+    # facebookㅇ에는 우리가 흔히 ID라고 말하는 영단어 포맷은 username이라 부르고
+    # 숫자로 나타내는 것을 id라고 한다. (instagram과 동일하다.)
+    # 여기에서는 우선 다른 account와의 통일성을 위해 username을 id라 부르고 숫자 id를 real_id라 한다.
+    real_id = models.CharField(max_length=20, null=True, blank=True)
+
     def get_account_url(self):
         return "https://www.facebook.com/%s" % self.id
 
@@ -110,3 +116,20 @@ class InstagramPost(models.Model):
 
     def __unicode__(self):
         return u"[{self.id}] {self.caption}".format(self=self)
+
+class FacebookPost(models.Model):
+    """하나의 facebook post를 저장하기 위한 모델."""
+
+    facebook_account = models.ForeignKey('FacebookAccount', related_name='posts', on_delete=models.CASCADE)
+
+    id = models.CharField(primary_key=True, max_length=100) # post id
+    message = models.TextField()
+    picture = models.URLField()
+    link = models.URLField()
+    created_at = models.DateTimeField()
+    shares_count = models.IntegerField(default=0)
+    likes_count = models.IntegerField(default=0)
+    comments_count = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return u"[{self.id}] {self.message}".format(self=self)
