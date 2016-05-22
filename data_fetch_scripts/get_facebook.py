@@ -109,15 +109,20 @@ def get_real_id(fa):
     USER_URL = "https://graph.facebook.com/%s" % fa.id
     response = requests.get(USER_URL, params={'access_token': FACEBOOK_ACCESS_TOKEN})
 
-    if response.status_code != requests.codes.ok:
+    if response.status_code == requests.codes.ok:
+        fa.real_id = response.json()["id"]
+        fa.save()
+        return True
+    elif response.status_code == requests.codes.not_found:
+        logging.info("[%s] is personal page (not allowed) or not exists." % fa.id)
+        return False
+    else:
         raise RuntimeError("abnormal response code[%d] for [%s], check [%s]" % (response.status_code, fa.id, response.url))
 
-    fa.real_id = response.json()["id"]
-    fa.save()
 
  
 if __name__ == '__main__':
     for facebook_account in FacebookAccount.objects.all().order_by('-last_fetch_time'):
         logging.info("crawl facebook post for [%s]" % facebook_account.id)
-        get_real_id(facebook_account)
-        get_recent_posts(facebook_account) 
+        if get_real_id(facebook_account):
+            get_recent_posts(facebook_account) 
