@@ -110,7 +110,7 @@ def get_real_id(fa):
     response = requests.get(USER_URL, params={'access_token': FACEBOOK_ACCESS_TOKEN})
 
     if response.status_code != requests.codes.ok:
-        raise RuntimeError("abnormal response code[%d] for [%s]" % (response.status_code, fa.id))
+        raise RuntimeError("abnormal response code[%d] for [%s], check [%s]" % (response.status_code, fa.id, response.url))
 
     fa.real_id = response.json()["id"]
     fa.save()

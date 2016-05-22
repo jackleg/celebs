@@ -63,7 +63,7 @@ def get_recent_posts(account):
     response = requests.get(RECENT_POST_BASE_URL, params={"client_id": INSTAGRAM_CLIENT_ID})
 
     if response.status_code != requests.codes.ok:
-        logging.info("abnormal response code[{0}] for [{1}], {2}".format(response.status_code, userid, response.url))
+        logging.info("abnormal response code[{0}] for [{1}], {2}".format(response.status_code, account.id, response.url))
         return
 
     res_obj = json.loads(response.text)
