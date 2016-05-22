@@ -10,52 +10,110 @@ import requests
 import sys
 import logging
 import json
+from datetime import datetime
+from dateutil.parser import parse
+
+import pytz
+
+from util import import_django
+import_django()
+
+from django.utils import timezone
+from celebs.models import FacebookAccount, FacebookPost
 
 FACEBOOK_PREFIX="http://www.facebook.com/"
 FACEBOOK_APP_ID="495992553876958"
 FACEBOOK_APP_SECRET="93306d6ac05684c7c8543efd462b0668"
 FACEBOOK_ACCESS_TOKEN=FACEBOOK_APP_ID+"|"+FACEBOOK_APP_SECRET
 
+
 logging.basicConfig(format='[%(levelname)s][%(asctime)s] %(message)s', level=logging.INFO)
 
-def get_facebook_ids():
-	result_dict         = {}
-	facebook_prefix_len = len(FACEBOOK_PREFIX)
 
-	with open("sns.txt", "r") as infile:
-		logging.info("get facebook ids from %s" % infile.name)
-		for line in infile:
-			tokens = line.rstrip("\n").split("\t")
-			name = tokens[0]
-			facebook_url = tokens[2]
-			if facebook_url == "": continue
-			# todo: page는 어떻게 처리해야 할지 더 알아볼 것.			
-			if facebook_url.startswith("http://www.facebook.com/pages/"): continue 
-			facebook_id = facebook_url[facebook_prefix_len:]
+def get_likes_count(object_id):
+    logging.info("get likes count for [%s]" % object_id)
+    LIKES_URL = "https://graph.facebook.com/%s/likes" % object_id
+    response = requests.get(LIKES_URL, params={"summary": "true", "access_token": FACEBOOK_ACCESS_TOKEN})
 
-			result_dict[name] = facebook_id
-	
-	logging.info("retrieve %d facebook ids." % len(result_dict))
-	return result_dict
+    try:
+        likes_count = response.json()["summary"]["total_count"]
+    except:
+        likes_count = 0
 
-def get_facebook_post(userid):
-	logging.info("get feed for [{0}]".format(userid))
-	FEED_URL="https://graph.facebook.com/{0}/feed".format(userid)
-	response = requests.get(FEED_URL, params={"access_token": FACEBOOK_ACCESS_TOKEN})
-	if response.status_code != requests.codes.ok:
-		logging.info("abnormal response code[{0}] for [{1}]".format(response.status_code, userid))
-		return
+    return likes_count
 
-	res_obj = json.loads(response.text)
-	for post in res_obj['data']:
-		try:
-			id           = post['id'].encode('utf-8')
-			created_time = post['created_time'].encode('utf-8')
-			updated_time = post['updated_time'].encode('utf-8')
-			message      = post['message'].encode('utf-8')	
-			sys.stdout.write("{0}\t{1}\t{2}\t{3}\n".format(id, created_time, updated_time, message))
-		except KeyError: # message가 없는 경우
-			continue
 
-facebook_ids = get_facebook_ids()
-get_facebook_post(facebook_ids.values()[0])
+def get_comments_count(object_id):
+    logging.info("get comments count for [%s]" % object_id)
+    LIKES_URL = "https://graph.facebook.com/%s/comments" % object_id
+    response = requests.get(LIKES_URL, params={"summary": "true", "access_token": FACEBOOK_ACCESS_TOKEN})
+
+    try:
+        comments_count = response.json()["summary"]["total_count"]
+    except:
+        comments_count = 0
+
+    return comments_count
+
+
+def get_recent_posts(fa):
+    logging.info("get feed for [{0}]".format(fa.id))
+
+    FEED_URL="https://graph.facebook.com/{0}/feed".format(fa.id)
+    response = requests.get(FEED_URL, params={"access_token": FACEBOOK_ACCESS_TOKEN})
+    if response.status_code != requests.codes.ok:
+        logging.info("abnormal response code[{0}] for [{1}]".format(response.status_code, userid))
+        return
+
+    new_post_count = 0
+    updated_post_count = 0
+    for data in response.json()["data"]:
+        # 본인이 직접 쓴 글이 아니면 skip.
+        if data["from"]["id"] != fa.real_id: continue
+
+        id = data["id"]
+        object_id = data.get("object_id", None)
+        shares_count = data["shares"]["count"] if "shares" in data else 0 
+        defaults = dict(message=data.get("message", None),
+                        picture=data.get("picture", None),
+                        link=data.get("link", None),
+                        created_at=parse(data["created_time"]),
+                        shares_count=shares_count,
+                        likes_count=get_likes_count(id),
+                        comments_count=get_comments_count(id))
+
+        fp_model, created = FacebookPost.objects.update_or_create(
+                                    defaults=defaults,
+                                    object_id=object_id,
+                                    facebook_account=fa,
+                                    id=id)
+
+        if created: new_post_count += 1
+        else: updated_post_count += 1
+
+    fa.last_fetch_time = timezone.now()
+    fa.save()    
+
+    logging.info("[%s] new post: %d, updated post: %d." % (fa.id, new_post_count, updated_post_count))
+
+
+def get_real_id(fa):
+    if fa.real_id is not None and fa.real_id != "0": return
+
+    logging.info("get real id for [%s]" % fa.id)
+
+    USER_URL = "https://graph.facebook.com/%s" % fa.id
+    response = requests.get(USER_URL, params={'access_token': FACEBOOK_ACCESS_TOKEN})
+
+    if response.status_code != requests.codes.ok:
+        raise RuntimeError("abnormal response code[%d] for [%s]" % (response.status_code, fa.id))
+
+    fa.real_id = response.json()["id"]
+    fa.save()
+
+ 
+if __name__ == '__main__':
+    for facebook_account in FacebookAccount.objects.all().order_by('-last_fetch_time'):
+        logging.info("crawl facebook post for [%s]" % facebook_account.id)
+        get_real_id(facebook_account)
+        get_recent_posts(facebook_account) 
