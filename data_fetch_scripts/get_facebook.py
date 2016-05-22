@@ -113,14 +113,12 @@ def get_real_id(fa):
         fa.real_id = response.json()["id"]
         fa.save()
         return True
-    elif response.status_code == requests.codes.not_found:
-        logging.info("[%s] is personal page (not allowed) or not exists." % fa.id)
-        return False
     else:
-        raise RuntimeError("abnormal response code[%d] for [%s], check [%s]" % (response.status_code, fa.id, response.url))
+        logging.info("abnormal response code[%d] for [%s], check [%s]" % (response.status_code, fa.id, response.url))
+        logging.info("message: %s" % response.json()["error"]["message"])
+        return False
 
 
- 
 if __name__ == '__main__':
     for facebook_account in FacebookAccount.objects.all().order_by('-last_fetch_time'):
         logging.info("crawl facebook post for [%s]" % facebook_account.id)
