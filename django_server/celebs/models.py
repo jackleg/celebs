@@ -123,10 +123,11 @@ class FacebookPost(models.Model):
     facebook_account = models.ForeignKey('FacebookAccount', related_name='posts', on_delete=models.CASCADE)
 
     id = models.CharField(primary_key=True, max_length=100) # post id
-    message = models.TextField()
-    picture = models.URLField()
-    link = models.URLField()
-    created_at = models.DateTimeField()
+    object_id = models.CharField(max_length=100, null=True, blank=True)
+    message = models.TextField(null=True, blank=True)
+    picture = models.URLField(null=True, blank=True)
+    link = models.URLField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True)
     shares_count = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0)
     comments_count = models.IntegerField(default=0)
