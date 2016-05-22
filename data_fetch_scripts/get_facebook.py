@@ -67,34 +67,38 @@ def get_recent_posts(fa):
 
     new_post_count = 0
     updated_post_count = 0
-    for data in response.json()["data"]:
-        # 본인이 직접 쓴 글이 아니면 skip.
-        if data["from"]["id"] != fa.real_id: continue
+    try:
+        for data in response.json()["data"]:
+            # 본인이 직접 쓴 글이 아니면 skip.
+            if data["from"]["id"] != fa.real_id: continue
 
-        id = data["id"]
-        object_id = data.get("object_id", None)
-        shares_count = data["shares"]["count"] if "shares" in data else 0 
-        defaults = dict(message=data.get("message", None),
-                        picture=data.get("picture", None),
-                        link=data.get("link", None),
-                        created_at=parse(data["created_time"]),
-                        shares_count=shares_count,
-                        likes_count=get_likes_count(id),
-                        comments_count=get_comments_count(id))
+            id = data["id"]
+            object_id = data.get("object_id", None)
+            shares_count = data["shares"]["count"] if "shares" in data else 0 
+            defaults = dict(message=data.get("message", None),
+                            picture=data.get("picture", None),
+                            source=data.get("source", None),
+                            link=data.get("link", None),
+                            created_at=parse(data["created_time"]),
+                            shares_count=shares_count,
+                            likes_count=get_likes_count(id),
+                            comments_count=get_comments_count(id))
 
-        fp_model, created = FacebookPost.objects.update_or_create(
-                                    defaults=defaults,
-                                    object_id=object_id,
-                                    facebook_account=fa,
-                                    id=id)
+            fp_model, created = FacebookPost.objects.update_or_create(
+                                        defaults=defaults,
+                                        object_id=object_id,
+                                        facebook_account=fa,
+                                        id=id)
 
-        if created: new_post_count += 1
-        else: updated_post_count += 1
+            if created: new_post_count += 1
+            else: updated_post_count += 1
 
-    fa.last_fetch_time = timezone.now()
-    fa.save()    
+        fa.last_fetch_time = timezone.now()
+        fa.save()    
 
-    logging.info("[%s] new post: %d, updated post: %d." % (fa.id, new_post_count, updated_post_count))
+        logging.info("[%s] new post: %d, updated post: %d." % (fa.id, new_post_count, updated_post_count))
+    except KeyError as e:
+        logging.info("[%s] has no data. please check." % fa.id)
 
 
 def get_real_id(fa):

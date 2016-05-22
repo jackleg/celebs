@@ -126,6 +126,7 @@ class FacebookPost(models.Model):
     object_id = models.CharField(max_length=100, null=True, blank=True)
     message = models.TextField(null=True, blank=True)
     picture = models.URLField(null=True, blank=True)
+    source = models.URLField(null=True, blank=True)
     link = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, blank=True)
     shares_count = models.IntegerField(default=0)
